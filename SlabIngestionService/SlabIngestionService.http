@@ -1,0 +1,6 @@
+@SlabIngestionService_HostAddress = http://localhost:5147
+
+GET {{SlabIngestionService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
