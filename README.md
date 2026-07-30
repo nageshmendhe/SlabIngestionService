@@ -70,7 +70,7 @@ Swagger UI will open automatically.
 
 ```json
 {
-  "slabId": "HSM-001",
+  "slabId": "HSM-2024-00142",
   "weight": 22000,
   "length": 11000,
   "width": 1200,
@@ -151,7 +151,7 @@ The application sends **20 concurrent POST requests** for the same `SlabId`.
 Example:
 
 ```
-SlabId : HSM-001
+SlabId : HSM-2024-00142
 ```
 
 ### Result
@@ -160,7 +160,7 @@ SlabId : HSM-001
 - Only one slab record exists after all requests completed.
 - The slab remained in a valid final state.
 - No partial updates or data corruption occurred.
-- Concurrent updates were handled using EF Core Optimistic Concurrency.
+- Concurrent updates were handled using EF Core Optimistic Concurrency (RowVersion). Conflicting updates returned 409 Conflict, preventing stale data from overwriting newer changes.
 
 ---
 
