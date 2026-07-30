@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SlabIngestionService.DTOs;
 using SlabIngestionService.Enums;
 using SlabIngestionService.Services;
@@ -20,9 +21,18 @@ namespace SlabIngestionService.Controllers
         [HttpPost("ingest")]
         public async Task<IActionResult> Ingest([FromBody] IngestSlabRequest request)
         {
-            var result = await _service.IngestAsync(request);
-
-            return Ok(result);
+            try
+            {
+                var result = await _service.IngestAsync(request);
+                return Ok(result);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict(new
+                {
+                    message = "The slab was modified by another request. Please retry."
+                });
+            }
         }
 
         [HttpGet("{slabId}")]

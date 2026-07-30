@@ -36,7 +36,14 @@ namespace SlabIngestionService.Services
             slab.Status = request.Status;
             slab.UpdatedAt = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                throw;
+            }
 
             return new SlabResponse
             {

@@ -12,5 +12,8 @@ namespace SlabIngestionService.Models
         public decimal Width { get; set; }
         public SlabStatus Status { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; } = Array.Empty<byte>();
     }
 }
