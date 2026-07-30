@@ -6,15 +6,31 @@ using SlabIngestionService.Models;
 
 namespace SlabIngestionService.Services
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="SlabIngestionService.Services.ISlabService" />
     public class SlabService : ISlabService
     {
+        /// <summary>
+        /// The context
+        /// </summary>
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SlabService"/> class.
+        /// </summary>
+        /// <param name="context">The context.</param>
         public SlabService(ApplicationDbContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Ingests the asynchronous.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns></returns>
         public async Task<SlabResponse> IngestAsync(IngestSlabRequest request)
         {
             var slab = await _context.Slabs
@@ -56,6 +72,11 @@ namespace SlabIngestionService.Services
             };
         }
 
+        /// <summary>
+        /// Gets the by identifier asynchronous.
+        /// </summary>
+        /// <param name="slabId">The slab identifier.</param>
+        /// <returns></returns>
         public async Task<SlabResponse?> GetByIdAsync(string slabId)
         {
             return await _context.Slabs
@@ -72,6 +93,13 @@ namespace SlabIngestionService.Services
                 .FirstOrDefaultAsync();
         }
 
+        /// <summary>
+        /// Gets the asynchronous.
+        /// </summary>
+        /// <param name="status">The status.</param>
+        /// <param name="from">From.</param>
+        /// <param name="to">To.</param>
+        /// <returns></returns>
         public async Task<IEnumerable<SlabResponse>> GetAsync(
             SlabStatus? status,
             DateTime? from,

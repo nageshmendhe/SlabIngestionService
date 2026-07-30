@@ -1,5 +1,8 @@
 ﻿using System.Net.Http.Json;
 
+/// <summary>
+/// Initializes a new instance of the <see cref=".$Program"/> class.
+/// </summary>
 HttpClient client = new HttpClient();
 
 // Replace with your API URL
@@ -10,12 +13,12 @@ Console.WriteLine("Starting Concurrency Test...");
 Console.WriteLine("Sending 20 concurrent requests...");
 Console.WriteLine("===========================================");
 
-var tasks = Enumerable.Range(1, 20)
-    .Select(async i =>
+var requestTasks = Enumerable.Range(1, 20)
+    .Select(i =>
     {
         Console.WriteLine($"Sending Request {i}...");
 
-        var response = await client.PostAsJsonAsync(
+        return client.PostAsJsonAsync(
             "/api/Slabs/ingest",
             new
             {
@@ -23,17 +26,21 @@ var tasks = Enumerable.Range(1, 20)
                 weight = 22000 + i,
                 length = 11000,
                 width = 1200,
-                status = "Shipped"
+                status = "InProduction"
             });
+    })
+    .ToArray();
 
-        var responseBody = await response.Content.ReadAsStringAsync();
+var responses = await Task.WhenAll(requestTasks);
+var responseTasks = responses.Select(async (response, index) =>
+{
+    var body = await response.Content.ReadAsStringAsync();
+    Console.WriteLine($"Request {index + 1} -> {response.StatusCode}");
+    Console.WriteLine(body);
+    Console.WriteLine(new string('-', 50));
+});
 
-        Console.WriteLine($"Request {i} -> {response.StatusCode}");
-        Console.WriteLine($"Response: {responseBody}");
-        Console.WriteLine(new string('-', 50));
-    });
-
-await Task.WhenAll(tasks);
+await Task.WhenAll(responseTasks);
 
 Console.WriteLine();
 Console.WriteLine("===========================================");

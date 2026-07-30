@@ -3,6 +3,9 @@ using SlabIngestionService.Data;
 using SlabIngestionService.Services;
 using System.Text.Json.Serialization;
 
+/// <summary>
+/// Initializes a new instance of the <see cref=".$Program"/> class.
+/// </summary>
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
