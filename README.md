@@ -1,4 +1,4 @@
-# # Slab Ingestion Service
+# Slab Ingestion Service
 
 ## Overview
 
@@ -40,7 +40,23 @@ Update the SQL Server connection string inside **appsettings.json**.
 }
 ```
 
-## Apply Migrations
+## Database Setup
+
+The project already includes Entity Framework Core migrations.
+
+Apply the existing migration:
+
+```powershell
+Update-Database
+```
+
+> **Note:** If you modify the data model in the future, create a new migration using:
+
+```powershell
+Add-Migration <MigrationName>
+```
+
+Then apply it using:
 
 ```powershell
 Update-Database
@@ -53,6 +69,34 @@ dotnet run
 ```
 
 Swagger UI will open automatically.
+
+---
+
+# Running the Concurrency Test
+
+The solution contains two projects:
+
+- **SlabIngestionService.API** – Main Web API
+- **SlabIngestionService.ConcurrencyTest** – Console application used to simulate concurrent requests.
+
+## Option 1 – Run Multiple Startup Projects (Recommended)
+
+1. Right-click the **Solution**.
+2. Select **Properties**.
+3. Open **Startup Project**.
+4. Select **Multiple startup projects**.
+5. Set both projects to **Start**.
+6. Click **OK** and press **F5**.
+
+The API and Console application will start together. The console application will automatically send **20 concurrent POST requests**.
+
+## Option 2 – Run Separately
+
+1. Start **SlabIngestionService.API**.
+2. Wait until Swagger opens.
+3. Start **SlabIngestionService.ConcurrencyTest**.
+
+The console application will send **20 concurrent POST requests** and display the results.
 
 ---
 
@@ -91,7 +135,7 @@ Swagger UI will open automatically.
 Example
 
 ```
-GET /api/slabs/HSM-001
+GET /api/slabs/HSM-2024-00142
 ```
 
 ---
@@ -160,7 +204,7 @@ SlabId : HSM-2024-00142
 - Only one slab record exists after all requests completed.
 - The slab remained in a valid final state.
 - No partial updates or data corruption occurred.
-- Concurrent updates were handled using EF Core Optimistic Concurrency (RowVersion). Conflicting updates returned 409 Conflict, preventing stale data from overwriting newer changes.
+- Concurrent updates were handled using EF Core Optimistic Concurrency (`RowVersion`). Conflicting updates returned **409 Conflict**, preventing stale data from overwriting newer changes.
 
 ---
 
